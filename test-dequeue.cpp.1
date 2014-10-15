@@ -1,0 +1,261 @@
+#include <iostream>
+#include <memory>
+#include <deque>
+#include <unordered_map>
+#include <algorithm>
+
+class A
+{
+public:
+	A(int i)
+		:m_i(i)
+	{
+		std::cout << "A(" << m_i << ")\n";
+	}
+
+	virtual ~A()
+	{
+		std::cout << "~A(" << m_i << ")\n";
+	}
+
+	int getI() const { return m_i; }
+
+	// friend bool operator== (const A& a, const A& b) ;
+
+protected:
+	int m_i;
+};
+
+// bool operator== (const A& a, const A& b)
+// {
+// 	std::cout << a.m_i << "==" << b.m_i << "?\n";
+// 	return a.m_i == b.m_i;
+// }
+
+// bool dequePred(const std::shared_ptr<A>& a)
+// {
+//	if (a.get()) {
+//		return (a.get()->getI() == 0);
+//	}
+
+//	return false;
+// }
+
+// void deque_noptr()
+// {
+// 	std::deque<A> dq;
+
+// 	for (int i = 1; i < 10; i++) {
+// 		dq.push_back(A(i));
+// 	}
+
+// 	for (auto it = dq.begin(); it != dq.end() ; it++) {
+// 		std::cout << it->getI() << " ";
+// 	}
+// 	std::cout << std::endl;
+
+// 	A sItem(10);
+
+// 	auto it = std::find(dq.begin(), dq.end(), sItem);
+// 	std::cout << sItem.getI()
+// 		  << (it != dq.end()? " found" : " failed") << std::endl;
+// 	it++;
+
+// 	if (it != dq.end()) {
+// 		std::cout << "next: " << it->getI() << std::endl;
+// 	}
+
+// 	sItem = A(11);
+
+// 	it = std::find(dq.begin(), dq.end(), sItem);
+// 	std::cout << sItem.getI()
+// 		  << (it != dq.end()? " found" : " failed") << std::endl;
+// }
+
+bool find_in_deque(const std::deque< std::shared_ptr<A> >& dq, const A& sItem)
+{
+	auto it = std::find_if(dq.begin(), dq.end(),
+		[sItem] (const std::shared_ptr<A>& a) {
+			return (a.get() && a.get()->getI() == sItem.getI());
+		});
+
+	return it != dq.end();
+}
+
+class FastDeque
+{
+public:
+	typedef	struct node
+	{
+		std::shared_ptr<A> data;
+
+		struct node* next;
+		struct node* prev;
+	} Node;
+
+	FastDeque();
+	~FastDeque();
+
+	unsigned int size();
+        Node* find(unsigned int key);
+	std::shared_ptr<A> pop_front();
+	void push_back(unsigned int key, std::shared_ptr<A> item);
+
+private:
+
+	std::unordered_map< unsigned int, Node* > m_indexedNodes;
+
+	Node* m_front;
+	Node* m_back;
+};
+
+FastDeque::FastDeque()
+	: m_front(NULL)
+	, m_back(NULL)
+{
+}
+
+FastDeque::~FastDeque()
+{
+	Node* n = m_front;
+	Node* p = n;
+	while (n != NULL) {
+		n = n->next;
+
+		std::cout << p->data->getI() << " dead";
+		delete p;
+		p = n;
+	}
+}
+
+FastDeque::Node* FastDeque::find(unsigned int item)
+{
+	auto it = m_indexedNodes.find(item);
+	if (it == m_indexedNodes.end()) {
+		return NULL;
+	}
+
+	return it->second;
+}
+
+std::shared_ptr<A> FastDeque::pop_front()
+{
+	if (m_front == NULL) {
+		return NULL;
+	}
+
+	std::shared_ptr<A> item(m_front->data);
+
+	// update pointers
+	Node* p = m_front;
+	m_front = m_front->next;
+	m_front->prev = NULL;
+
+	// delete this node and its index
+	delete p;
+	m_indexedNodes.erase(item->getI());
+
+	return item;
+}
+
+void FastDeque::push_back(unsigned int key, std::shared_ptr<A> item)
+{
+	// create a new node and index it
+	Node* n = new Node();
+	n->data = item;
+	n->prev = m_back;
+	n->next = NULL;
+	m_indexedNodes[item->getI()] = m_back;
+
+	// update pointers
+	if (m_back == NULL) {
+		m_back = n;
+		m_front = m_back;
+	} else {
+		Node* p = m_back;
+		m_back->next = n;
+		m_back = m_back->next;
+		m_back->prev = p;
+	}
+}
+
+// void deqeue_withptr()
+// {
+// 	std::deque< std::shared_ptr<A> > dq;
+
+// 	std::shared_ptr<A> a;
+// 	for (int i = 1; i < 10; i++) {
+// 		dq.push_back( std::shared_ptr<A>(new A(i)) );
+// 	}
+
+// 	for (auto it = dq.begin(); it != dq.end() ; it++) {
+// 		if (it->get()) {
+// 			std::cout << it->get()->getI();
+// 		} else {
+// 			std::cout << "x";
+// 		}
+// 		std::cout << " ";
+// 	}
+// 	std::cout << std::endl;
+
+// 	A sItem(3);
+// 	std::cout << sItem.getI()
+// 		  << (find_in_deque(dq, sItem)? " found" : " failed") << std::endl;
+
+// 	// if (it->get()) {
+// 	// 	std::cout << "next: " << (it->get())->getI() << std::endl;
+// 	// }
+
+// 	sItem = A(10);
+// 	std::cout << sItem.getI()
+// 		  << (find_in_deque(dq, sItem)? " found" : " failed") << std::endl;
+
+// 	sItem = A(9);
+// 	std::cout << sItem.getI()
+// 		  << (find_in_deque(dq, sItem)? " found" : " failed") << std::endl;
+// }
+
+void fast_deque()
+{
+	FastDeque dq;
+
+	std::shared_ptr<A> a;
+	for (int i = 1; i < 10; i++) {
+		dq.push_back( std::shared_ptr<A>(new A(i)) );
+	}
+
+	// for (auto it = dq.begin(); it != dq.end() ; it++) {
+	// 	if (it->get()) {
+	// 		std::cout << it->get()->getI();
+	// 	} else {
+	// 		std::cout << "x";
+	// 	}
+	// 	std::cout << " ";
+	// }
+	// std::cout << std::endl;
+
+	A sItem(3);
+	std::cout << sItem.getI()
+		  << (dq.find(3)? " found" : " failed") << std::endl;
+
+	// if (it->get()) {
+	// 	std::cout << "next: " << (it->get())->getI() << std::endl;
+	// }
+
+	sItem = A(10);
+	std::cout << sItem.getI()
+		  << (dq.find(10)? " found" : " failed") << std::endl;
+
+	sItem = A(9);
+	std::cout << sItem.getI()
+		  << (dq.find(9)? " found" : " failed") << std::endl;
+}
+
+int main()
+{
+	// deqeue_withptr();
+	// deque_noptr();
+	fast_deque();
+
+	return 0;
+}
