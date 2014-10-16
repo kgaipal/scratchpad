@@ -1,0 +1,96 @@
+Mar 3rd 2013
+5-6pm CST
+https://docs.google.com/document/d/12Zm9GIZKa1CHLiMMfGZBC2Adbx5khUqt8fX_eeToOoE/edit?pli=1
+
+
+Please use this Google doc to code during your interview. To make hands free coding a little easier, we recommend that you use a headset or a phone with speaker option.
+
+Best,
+Google Staffing
+
+
+MIKE : Hello.  Is this Kshitij?
+Yes
+Good, we can both see each others typing.  I’m going to call you in a minute or two.  Hopefully you are in a position where you can be on the phone and type.
+Yes you can call me on 806-252-6188
+
+Ok.  I will use that number.
+k
+
+------ begin
+
+
+int pick_random(int n); // return a random number between 0 and n-1
+#define SWAP(x,y) { int tmp = x; x = y; y = tmp; }
+
+int* sfl(int n) {
+
+  int* res = new int[n];
+
+  for (int i = 0; i < n; i + 1) {// no i increment
+    res[i] = i;
+  }
+
+  for (int i = n; i >= 1; --i) {
+    int tmp = pick_random(i);
+    SWAP(res[i], res[tmp]);
+  }
+// no return value
+
+// { int tmp = res[i]; res[i] = res[tmp]; res[tmp] = tmp; }
+}
+----- end
+
+
+--- begin
+Given
+struct range {
+  int start_time;
+  int end_time;
+};
+
+representing a time range [start_time <= time < end_time]
+
+Write a function which takes two iterators (begin, end) representing an
+unordered sequence of ranges and produces an ordered sequence with the minimum
+number of ranges (i.e. coalescing overlapping ranges).
+
+Example:
+[3,5] [1,4] [6,9] [11,12] [3,7] [9,10] -> [1,9] [9,10] [11,12]
+
+[1,4], [2,3] => [1, 4]
+[1,4], [2,5] => [1, 5]
+[1,4], [4,5] =>
+
+-- solution:
+void merge_time_sequence(List* head)
+{
+// 1. sort them all in ordered by start_time value
+          // input: [1,4], [3,5], [3,7], [6,9] [9,10] [11,12] 
+// output: [1, 4] [1, 3] => [1,3] [1,4]
+// [3,5] [1,4] => [1,4]  [3,5] => [1, 5]
+head = sort_by_time(head);
+
+// 2. start merging with overlapping
+// first node to compare is first and second in consideration is second
+if (second->start_time < first->end_time)
+{
+	// overlap
+
+if (first>end_time > second->end_time) 
+{
+// [ first->start_time, first->end_time]
+} else 
+{
+// [first->start_time, second->end_time]
+}
+// continue a, b ,c and a,b are merged, start again with [a+b] to compare with c, delete b
+} 
+else 
+{
+// leave as it is since no overlap: advance to next item by one
+}
+}
+--- end
+
+
