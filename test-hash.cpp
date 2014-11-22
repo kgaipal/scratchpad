@@ -32,8 +32,8 @@ public:
 		boost::hash_combine(seed, k.key1);
 		boost::hash_combine(seed, k.key2);
 
-		std::cout << "computed ["
-			  << k.key1 << ":" << k.key2 << "]=>" << seed <<"\n";
+		// std::cout << "computed ["
+		// 	  << k.key1 << ":" << k.key2 << "]=>" << seed <<"\n";
 		return seed;
 	}
 };
@@ -60,6 +60,10 @@ int main()
 
 	std::cout << "finding\n";
 	auto h = hashValues.find(n1);
+
+	for (int i = 10; i < 50; i++) {
+		std::cout << i << ": " << MyHash< Keys<ID, ID> >()(n1) << "\n";
+	}
 
 	// std::cout << "hash(n1) = " << MyHash< Keys<ID, ID> >()(n1) << "\n";
 

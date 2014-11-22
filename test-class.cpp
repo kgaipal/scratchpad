@@ -91,7 +91,7 @@ private:
 	int m_j;
 };
 
-int main()
+void func1()
 {
 	{
 		A_static::setI(7);
@@ -101,30 +101,48 @@ int main()
 	a.printI();
 	A_static::setI(99);
 	a.printI();
+}
 
-	// std::unordered_map< int, std::unique_ptr<A> > um;
+void func2()
+{
+	std::unordered_map< int, std::unique_ptr<A> > um;
 
-	// um[0] = std::unique_ptr<A>(new B(2,99));
-	// um[1].reset(new C(-2,-99));
+	um[0] = std::unique_ptr<A>(new B(2,99));
+	um[1].reset(new C(-2,-99));
+}
 
-	// std::vector< std::unique_ptr<A> > vt;
+void func3()
+{
+	std::vector< std::unique_ptr<A> > vt;
 
-	// vt.push_back(std::unique_ptr<A>(new B(2,99)));
-	// vt.push_back(std::unique_ptr<A>(new C(-2,-99)));
+	vt.push_back(std::unique_ptr<A>(new B(2,99)));
+	vt.push_back(std::unique_ptr<A>(new C(-2,-99)));
 
-	// std::unique_ptr<A> x(new C(-1,-100));
-	// vt.push_back(std::move(x));
+	std::unique_ptr<A> x(new C(-1,-100));
+	vt.push_back(std::move(x));
 
-	// for (size_t i = 0; i < vt.size(); i++) {
+	for (size_t i = 0; i < vt.size(); i++) {
 
-	// 	A* a = vt[i].get();
-	// 	std::cout << "-\n";
-	// 	if (typeid(*a) == typeid(B)) {
-	// 		vt[i]->abstract();
-	// 	} else if (typeid(*a) == typeid(C)) {
-	// 		vt[i]->abstract();
-	// 	}
-	// }
+		A* a = vt[i].get();
+		std::cout << "-\n";
+		if (typeid(*a) == typeid(B)) {
+			vt[i]->abstract();
+		} else if (typeid(*a) == typeid(C)) {
+			vt[i]->abstract();
+		}
+	}
+}
+
+void func4()
+{
+}
+
+int main()
+{
+	// func1();
+	// func2();
+	// func3();
+	func4();
 
 	return 0;
 }
