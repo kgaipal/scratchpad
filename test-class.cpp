@@ -201,6 +201,18 @@ void emptyClass()
 		  << sizeof(Dx) << std::endl;
 }
 
+namespace nmspc2
+{
+	class A {};
+	class B { public: B(A*){} };
+
+	
+	void doExplicit() {
+		A* a = new A;
+		B b = a;
+	}
+};
+
 int main()
 {
 	// func1();
@@ -211,6 +223,9 @@ int main()
 	// nmspc1::X* x = new nmspc1::X; // error: cant abstract class
 	// nmspc1::func1();
 	// operatorOverloading();
-	emptyClass();
+	// emptyClass();
+	
+	nmspc2::doExplicit();
+	
 	return 0;
 }
