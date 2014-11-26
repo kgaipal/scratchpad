@@ -1,45 +1,75 @@
 #include <iostream>
 
-class A
+void func1()
 {
-public:
-	A()
-	: m_i(-1)
-	{ }
+	// class A;
+	// auto manipulateI = [&] (A &a) {
+	// 	a.m_i = 9;
+	// };
 
-	int printI() const { return m_i; }
+	// class A
+	// {
+	// public:
+	// 	A()
+	// 	: m_i(-1)
+	// 	{
+	// 	}
 
-	friend void manipulateI(A& a);
+	// 	int printI() const { return m_i; }
 
-protected:
-	int m_i;
-};
+	// 	friend void manipulateI(A& a);
 
-void manipulateI(A &a)
+	// protected:
+	// 	int m_i;
+	// };
+
+
+	// class B : public A
+	// {
+	// public:
+	// 	B()
+	// 	: A()
+	// 	{
+	// 		A::m_i = -2;
+	// 	}
+	// };
+
+	// A a;
+	// std::cout << a.printI() << std::endl;
+	// manipulateI(a);
+	// std::cout << a.printI() << std::endl;
+
+	// B b;
+	// std::cout << b.printI() << std::endl;
+	// manipulateI(b);
+	// std::cout << b.printI() << std::endl;
+}
+
+void func2()
 {
-	a.m_i = 9;
-};
+	class A	{ int i; };
+	class B : virtual public A { int i; };
+	class C : virtual public A { int i; };
 
+	class D : public B, public C
+	{
+	public:
+		virtual ~D()
+		{
+		}
+	private:
+		int i;
 
-class B : public A
-{
-public:
-	B()
-		: A()
-		{ A::m_i = -2;}
+	};
 
-};
+	D d;
+	std::cout << sizeof(d) << std::endl;
+}
 
 int main()
 {
-	A a;
-	std::cout << a.printI() << std::endl;
-	manipulateI(a);
-	std::cout << a.printI() << std::endl;
+	// func1();
+	func2();
 
-	B b;
-	std::cout << b.printI() << std::endl;
-	manipulateI(b);
-	std::cout << b.printI() << std::endl;
 	return 0;
 }

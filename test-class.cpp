@@ -135,6 +135,70 @@ void func3()
 
 void func4()
 {
+	class X
+	{
+	public:
+		// explicit X(int a)
+		X(int a)
+		{
+		}
+	};
+
+	// X x_obj = 1;	// error because 'explicit' is used
+	X x_obj = 1;		// implicit conversion allowed
+}
+
+namespace nmspc1
+{
+	class X
+	{
+	public:
+		X();
+		virtual ~X() = 0; // forcing abstractness
+	};
+
+	X::X() {}
+	X::~X() { std::cout << "~X()\n";}
+
+	class A : public X { public: virtual ~A() { std::cout << "~A()\n";}};
+
+	void func1()
+	{
+		A* a = new A;
+		delete a;
+	}
+};
+
+void operatorOverloading()
+{
+	class A
+	{
+	public:
+		A(bool set) : mi(set) { }
+		bool getI() const { return mi; }
+		bool operator&&(bool i) const { return (mi && i);	}
+		bool operator&&(const A& other) const { return (mi && other.getI()); }
+	private:
+		int mi;
+	};
+
+	A a(false), b(false);
+	std::cout << (a && b && true) << "\n";
+}
+
+void emptyClass()
+{
+	class A {};
+	class B {};
+	class C {};
+	class D {};
+	class Dx {char c; char x;};
+
+	std::cout << sizeof(A) << ","
+		  << sizeof(B) << ","
+		  << sizeof(C) << ","
+		  << sizeof(D) << ","
+		  << sizeof(Dx) << std::endl;
 }
 
 int main()
@@ -142,7 +206,11 @@ int main()
 	// func1();
 	// func2();
 	// func3();
-	func4();
+	// func4();
 
+	// nmspc1::X* x = new nmspc1::X; // error: cant abstract class
+	// nmspc1::func1();
+	// operatorOverloading();
+	emptyClass();
 	return 0;
 }
