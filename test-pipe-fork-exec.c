@@ -47,10 +47,10 @@ int fork_pipes (int n, struct command *cmd)
 	{
 		pipe (fd);
 
-		/* f [1] is the write end of the pipe, we carry `in` from the prev iteration.  */
+		/* f[1] is write end of the pipe, we carry `in` from the prev iteration.*/
 		spawn_proc (in, fd [1], cmd + i);
 
-		/* No need for the write and of the pipe, the child will write here.  */
+		/* No need for the write and of the pipe, the child will write here.    */
 		close (fd [1]);
 
 		/* Keep the read end of the pipe, the next child will read from there.  */
