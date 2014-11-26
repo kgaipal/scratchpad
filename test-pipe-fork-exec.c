@@ -1,115 +1,84 @@
-/* compile gcc test-pipe-fork-exec.c */
-/* taken from  http://stackoverflow.com/questions/23419128/learning-pipes-exec-fork-and-trying-to-chain-three-processes-together?rq=1 */
+/* compile as gcc test-pipe-fork-exec.c */
+/* taken from : http://stackoverflow.com/a/8092270 */
 
-int main(int argc, char *argv[])
+#include <unistd.h>
+#include <stdlib.h>
+
+struct command
 {
-	int pfd[2];                                     /* Pipe file descriptors */
-	int pfd2[2];
+	const char **argv;
+};
 
-	if (pipe(pfd) == -1)                            /* Create pipe */
-		perror("pipe");
+int spawn_proc (int in, int out, struct command *cmd)
+{
+	pid_t pid;
 
-	if (pipe(pfd2) == -1)                            /* Create pipe */
-		perror("pipe");
-
-	/*
-	  Fork process 1 and exec ls command
-	  write to pfd[1], close pfd[0]
-	*/
-	switch (fork()) {
-	case -1:
-		perror("fork");
-	case 0:
-		if (close(pfd[0]) == -1)
-			perror("close 1");
-
-		// dup stdout on pfd[1]
-		if (pfd[1] != STDOUT_FILENO) {
-			if (dup2(pfd[1], STDOUT_FILENO) == -1)
-				perror("dup2 2");
-			if (close(pfd[1]) == -1)
-				perror("close 4");
+	if ((pid = fork ()) == 0)
+	{
+		if (in != 0)
+		{
+			dup2 (in, 0);
+			close (in);
 		}
-		execlp("ls", "ls", (char *) NULL);
-		perror("execlp ls");
-	default:
-		break;
+
+		if (out != 1)
+		{
+			dup2 (out, 1);
+			close (out);
+		}
+
+		return execvp (cmd->argv [0], (char * const *)cmd->argv);
 	}
 
-	/*
-	 * Fork process 2 and exec wc command
-	 read from pfd[0], close pfd[1]
-	 write to pfd[1], close pfd2[0]
-	*/
-	switch (fork()) {
-	case -1:
-		perror("fork");
-	case 0:
-		// read from pfd[0]
-		if (close(pfd[1]) == -1)
-			perror("close 3");
+	return pid;
+}
 
-		if (pfd[0] != STDIN_FILENO) {
-			if (dup2(pfd[0], STDIN_FILENO) == -1)
-				perror("dup2 2");
-			if (close(pfd[0]) == -1)
-				perror("close 4");
-		}
+int fork_pipes (int n, struct command *cmd)
+{
+	int i;
+	pid_t pid;
+	int in, fd [2];
 
-		if (pfd2[1] != STDOUT_FILENO) {
-			if (dup2(pfd2[1], STDOUT_FILENO) == -1)
-				perror("dup2 2");
-			if (close(pfd2[1]) == -1)
-				perror("close 4");
-		}
+	/* The first process should get its input from the original file descriptor 0.  */
+	in = 0;
 
-		execlp("cat", "cat", (char *) NULL);
-		perror("execlp cat");
-	default:
-		break;
+	/* Note the loop bound, we spawn here all, but the last stage of the pipeline.  */
+	for (i = 0; i < n - 1; ++i)
+	{
+		pipe (fd);
+
+		/* f [1] is the write end of the pipe, we carry `in` from the prev iteration.  */
+		spawn_proc (in, fd [1], cmd + i);
+
+		/* No need for the write and of the pipe, the child will write here.  */
+		close (fd [1]);
+
+		/* Keep the read end of the pipe, the next child will read from there.  */
+		in = fd [0];
 	}
 
-	/*
-	 *   Fork process 3
-	 */
-	switch (fork()) {
-	case -1:
-		perror("fork");
-	case 0:
-		if (close(pfd2[1]) == -1)
-			perror("close 3");
+	/* Last stage of the pipeline - set stdin be the read end of the previous pipe
+	   and output to the original file descriptor 1. */
+	if (in != 0)
+		dup2 (in, 0);
 
-		if (pfd2[0] != STDIN_FILENO) {
-			if (dup2(pfd2[0], STDIN_FILENO) == -1)
-				perror("dup2 2");
-			if (close(pfd2[0]) == -1)
-				perror("close 4");
-		}
+	/* Execute the last stage with the current process. */
+	return execvp (cmd [i].argv [0], (char * const *)cmd [i].argv);
+}
 
-		execlp("wc", "wc", "-l", (char *) NULL);
-		perror("execlp wc");
-	default:
-		break;
-	}
+int main (int argc, char** argv)
+{
+	const char *ls[] = { "ls", "-1", 0 };
+	const char *cat[] = { "cat", 0 };
+	const char *awk[] = { "awk", "{print $1}", 0 };
+	const char *sort[] = { "sort", 0 };
+	const char *uniq[] = { "uniq", 0 };
+	const char *wc[] = { "wc", "-l", 0 };
 
+	struct command cmd [] = {
+		/* {ls}, {awk}, {sort}, {uniq} */
+		{ls}, {cat}, {wc}
+	};
 
-	/* Parent closes unused file descriptors for pipe, and waits for children */
-
-	if (close(pfd[0]) == -1)
-		perror("close 5");
-	if (close(pfd[1]) == -1)
-		perror("close 6");
-	if (close(pfd2[0]) == -1)
-		perror("close 5");
-	if (close(pfd2[1]) == -1)
-		perror("close 6");
-
-	if (wait(NULL) == -1)
-		perror("wait 1");
-	if (wait(NULL) == -1)
-		perror("wait 2");
-	if (wait(NULL) == -1)
-		perror("wait 3");
-
-	exit(EXIT_SUCCESS);
+	return fork_pipes (sizeof(cmd)/sizeof(cmd[0]), cmd);
 }
