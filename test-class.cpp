@@ -206,10 +206,23 @@ namespace nmspc2
 	class A {};
 	class B { public: B(A*){} };
 
-	
 	void doExplicit() {
 		A* a = new A;
 		B b = a;
+	}
+};
+
+namespace nmspc3
+{
+	class A {};
+	class B : public A {};
+
+	void doSlicing(A&) {
+	}
+
+	void test() {
+		B b;
+		doSlicing(b);
 	}
 };
 
@@ -224,8 +237,8 @@ int main()
 	// nmspc1::func1();
 	// operatorOverloading();
 	// emptyClass();
-	
+
 	nmspc2::doExplicit();
-	
+
 	return 0;
 }
