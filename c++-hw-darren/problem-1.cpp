@@ -5,99 +5,84 @@ different combinations up the ladder?  Then figure out an algorithm that
 will actually print out all the different ways up the ladder.  ie:
 1,1,2,1,2,2... etc...
 
-Sol:
+Sol: BST
 
-This can be solved by dynamic programming but I was not able to come up with a
-mathametical formula for any N because this I suspect can be done using permutations and
-combinations. I tried some examples starting with n=1, n=2 ... to n=5 and it followed my
-expectations.
+We can visualize this as a binary decision making tree. We start with a root node where we
+have still N steps to climb. If we take one step (left subtree) on the ladder we have N-1
+steps left to take, if we take 2 steps (right subtree) on the ladder we have N-2 steps
+left to take. So each node in this BST represents a ladder step with root node as
+exception representing no step on the ladder.
 
-Visualize each step as a dot '.' and we start at 'x' and finish at the last dot.
+While making this tree path we have to remember the path we have come from so we have a
+data member 'pathTraveled' wihth 1 or 2 appended before waling down that path. We print
+this string path when we reach the top ('stepsLeft' == 0). Thus, this forms our base case.
+We take two steps only when possible.
 
-If we have only one step on the ladder, we have only one way to reach n=1 i.e.
-    x . => x 1
-
-If we have only two steps on the ladder, we have 2 ways to reach second (n=2) dot
-    x . . => x 1 1
-	     x 2
-
-If we have 3 steps on the ladder, we have 3 ways to reach third (n=3) dot
-    x . . . =>  x 1 1 1
-		x 2   1
-		x 1 2
-
-If we have 4 steps on the ladder, we have 5 ways to reach fourth (n=4) dot
-    x . . . . => x 1 1 1 1
-		 x 2   1 1
-		 x 2   2
-		 x 1 1 2
-		 x 1 2   1
-
-If we have 5 steps on the ladder, we have 8 ways to reach fourth (n=5) dot
-    x . . . . . => x 1 1 1 1 1
-		   x 2   1 2
-		   x 1 2   1
-		   x 1 1 1 2
-		   x 1 2   1 1
-		   x 1 2   2
-		   x 2   1 1 1
-		   x 1 1 2   1
-
-Observing the pattern, we see that steps for any step k is actually the sum of the ways we
-could reach k-1 and k-2 steps i.e.
-
-n=1  n=2  n=3  n=4  n=5 ...
- 1    2    3    5    8
-
-Hence we can compute say for nth step as the summation of all the steps it took for us to
-reach n-1 and n-2 step. Like I said I was not able to get a mathematical formula using
-permutation-combination so I cant back up with math proof that this will hold true for any
-N step.
+Time complexity for this will be bounded by O(log N). The tree size keeps decreasing as
+there are fewer steps left to take on way up to the ladder top. So we can visaualize this
+tree as a lot of nodes with 1s or 2s on the left.
 
 */
 
 #include <iostream>
 
-// big-O for space: constant -- 4 variables only, good
-// big-O for time: O(stepsInLadder) -- linear, good
-int computeAllPermutationsToReachLadderTop(unsigned int stepsInLadder)
+class Node
 {
-	unsigned int fn1 = 1;
-	unsigned int fn2 = 2;
+public:
+	Node(unsigned int stepsLeft, const char* _pathTraveled, char newStep)
+		: stepsLeft(stepsLeft)
+		, oneStep(nullptr)
+		, twoStep(nullptr)
+	{
+		// append the newStep to the given path
+		pathLength = strlen(strlen(_pathTraveled) + 1 /* + newStep*/);
+		pathTraveled = malloc(sizeof(char) * pathLength);
 
-	if (stepsInLadder == 0) {
-		return 0;
-	} else if (stepsInLadder == 1) {
-		return fn1;
-	} else if (stepsInLadder == 2) {
-		return fn2;
+		strpcy(pathTraveled, _pathTraveled);
+		pathTraveled[oldPathLength-1] = newStep; // append
 	}
 
-	unsigned int fnN = fn2;
+	char* pathTraveled;
+	const unsigned int stepsLeft;
 
-	// loop invariant: 3 <= i <= stepsInLadder and fnN == fn2
-	for (unsigned int i = 3; i <= stepsInLadder; i++) {
-		fnN = fn2 + fn1;
+	Node* oneStep;
+	Node* twoStep;
+};
 
-		// update progress of last two steps values so that we can compute future
-		// step value
-		fn1 = fn2;
-		fn2 = fnN;
+void explorePath(Node* root)
+{
+	if (root == nullptr) {
+		return;
 	}
 
-	return fnN;
+	// have reached top of the ladder
+	// print the path you came on before returning
+	if (root->stepsLeft == 0) {
+		std::cout << root->pathTraveled + "\n";
+		return;
+	}
+
+	// not yet at the top: one step always possible
+	root->oneStep = new Node(root->stepsLeft-1, root->pathTraveled, '1');
+	explorePath(root->oneStep);
+
+	// not yet at the top: two steps possible?
+	if (root->stepsLeft-2 >= 0) {
+		root->twoStep = new Node(root->stepsLeft-2, root->pathTraveled, '2');
+		explorePath(root->twoStep);
+	}
 }
 
-int main(/*no args*/)
+void printSteps(unsigned int stepsInLadder)
 {
-    int stepsInLadder = 0;
-    while (stepsInLadder < 0) {
-	    std::cout << "Enter the steps in ladder (>0): " << std::endl;
-	    std::cin >> stepsInLadder;
-    }
+	Node* root = new Node(stepsInLadder, ""/*nothing traveled so far*/);
+	explorePath(root);
 
-    std::cout << "Total " << computeAllPermutationsToReachLadderTop()
-	      << " ways to reach ladder top." << std::endl;
+	// when program dies all will be reclaimed, no memory leaks
+}
 
-    return 0;
+int main()
+{
+	printSteps(10);		// say 10 steps in ladder
+	return 0;
 }
