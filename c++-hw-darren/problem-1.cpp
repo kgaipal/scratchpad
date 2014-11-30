@@ -39,7 +39,7 @@ public:
 		pathTraveled = malloc(sizeof(char) * pathLength);
 
 		strpcy(pathTraveled, _pathTraveled);
-		pathTraveled[oldPathLength-1] = newStep; // append
+		pathTraveled[pathLength-2] = newStep; // append
 	}
 
 	char* pathTraveled;
