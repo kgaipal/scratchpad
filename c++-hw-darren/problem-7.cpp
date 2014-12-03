@@ -26,9 +26,11 @@ private:
 	unsigned int mHeapSize;
 	void* mUnmappedHeap;	// before this all is divided into slabs and metadata
 
-	static const unsigned int max4BytesItemInASlab;
+	// Convenient numbers for pointer calculation.
 	static const unsigned int slabSize;
+	static const unsigned int slabDataSize;	// must be a multiple of 2^
 	static const unsigned int slabRowAndSlabSize;
+	static const unsigned int maxItemSizeSupported; // must be a multiple of 2^
 
 	// Creates a new slab which will hold items of given 'itemSize'.
 	SlabHeader* createSlab(unsigned int itemSize);
@@ -45,9 +47,10 @@ private:
 	SlabItem* allocateItemFromSlab(SlabRow* slr);
 };
 
-unsigned int SlabAllocator::maxItemsSizeInASlab = 1024; // 1KB
-unsigned int SlabAllocator::slabSize = sizeof(SlabHeader) + maxItemsSizeInASlab;
+unsigned int SlabAllocator::slabDataSize = 1024; // 1 KB
+unsigned int SlabAllocator::slabSize = sizeof(SlabHeader) + slabDataSize;
 unsigned int SlabAllocator::slabRowAndSlabSize = sizeof(SlabRow) + slabSize;
+unsigned int SlabAllocator::maxItemSizeSupported = slabDataSize; // bigger require special treatment
 
 struct SlabAllocator::SlabRow
 {
@@ -55,19 +58,22 @@ struct SlabAllocator::SlabRow
 	SlabHeader* firstSlab;
 
 	SlabRow* next;
+
+	unsigned int pad;	// padding header to 2^x bytes
 };
 
 struct SlabAllocator::SlabHeader
 {
 	unsigned int itemsRemaining;
-
 	SlabItem* nextFreeItem;
 	SlabHeader* next;	// next slab of same type
+
+	unsigned int pad;	// padding header to 2^x bytes
 };
 
 struct SlabAllocator::SlabItem
 {
-	int* next;
+	SlabItem* next;
 };
 
 SlabAllocator::SlabAllocator(void *heap, unsigned int mHeapSize)
@@ -89,7 +95,7 @@ SlabHeader* SlabAllocator::createSlab(unsigned int itemSize)
 	// create slab and header inside it
 	SlabHeader* sh = mUnmappedHeap;
 	mUnMappedHeap += slabSize;
-	sh->itemsRemaining = SlabAllocator::maxItemsSizeInASlab / itemSize;
+	sh->itemsRemaining = SlabAllocator::slabDataSize / itemSize;
 	sh->nextFreeItem = sh + sizeof(SlabHeader);
 	sh->next = nullptr;
 
@@ -161,43 +167,49 @@ void* SlabAllocator::malloc(unsigned int requestSize)
 {
 	SlabRow* slr = nullptr;
 
-	// calculate item size to allocate for this request,
-	// we will search right slab row based on this computation
+	// calculate item size to allocate for this request;
+	// itemSize will come out as multiple of 2 so that we
+	// can find right slab_row based on this computation
 	unsigned int itemSize = 1;
 	for (int i = 0; itemSize < requestSize; i++) {
-		itemSize = itemSize << i;
+		itemSize <<= i;
+		if (itemSize > slabDataSize) {
+			break;	// process this as special block
+		}
 	}
 
 	// iterate on the slab headers linked list to find the right spot
-	if (itemSize > maxItemSizeInSlabRow) {
-		// process as special block
-	} else {
-		// find the correct slab header for this item
-		// otherwise create a new slab header
-		SlabRow* slr = mRoot;
-		SlabRow* slrPrev = (slr == nullptr? nullptr : slr->next);
-		while (slr != nullptr) {
-			if (slr->itemSize == itemSize) {
-				break;
-			}
-			slrPrev = slr;
-			slr = slr->next;
+
+	// TODO: process as special block
+	if (itemSize > maxItemSizeSupported) {
+		throw std::runtime_error("special block not yet supported");
+	}
+
+	// find the correct slab header for this item
+	// otherwise create a new slab header
+	SlabRow* slr = mRoot;
+	SlabRow* slrPrev = (slr == nullptr? nullptr : slr->next);
+	while (slr != nullptr) {
+		if (slr->itemSize == itemSize) {
+			break;
 		}
+		slrPrev = slr;
+		slr = slr->next;
+	}
 
-		// create a new slab row for this item on demand
-		if (slr == nullptr) {
-			slr = createSlabRow(itemSize);
+	// create a new slab row for this item on demand
+	if (slr == nullptr) {
+		slr = createSlabRow(itemSize);
 
-			if (slrPrev == nullptr) {
-				mRoot = slr; // this was first ever request
-			} else {
-				slrPrev->next = slr;
-			}
+		if (slrPrev == nullptr) {
+			mRoot = slr; // this was first ever request
+		} else {
+			slrPrev->next = slr;
 		}
 	}
 
 	// return the allocated item from this slab, it can be nullptr if no more memory
-	return allocateRequestFromSlab(slr, itemSize);
+	return (void*)(allocateRequestFromSlab(slr, itemSize));
 }
 
 void SlabAllocator::free(void* mem)
