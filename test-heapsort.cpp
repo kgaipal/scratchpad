@@ -1,8 +1,11 @@
 #include <iostream>
 
 void build_heap(int array[], unsigned int size);
-void max_heapify(int array[], unsigned int start, unsigned int size);
 void heapsort(int array[], unsigned int size);
+void max_heapify(int array[], unsigned int start, unsigned int size);
+void min_heapify(int array[], unsigned int start, unsigned int size);
+
+void (*heapify) (int [], unsigned int, unsigned int) = &min_heapify;
 
 void print_array(int array[], unsigned int size)
 {
@@ -14,44 +17,69 @@ void print_array(int array[], unsigned int size)
 	std::cout << "\n";
 }
 
-void swap(int* val1, int* val2)
+inline void swap(int* val1, int* val2)
 {
-	int temp = *val1;
-	*val1 = *val2;
-	*val2 = temp;
+	(*val1) = (*val1) ^ (*val2);
+	(*val2) = (*val1) ^ (*val2);
+	(*val1) = (*val1) ^ (*val2);
 }
 
 void build_heap(int array[], unsigned int size)
 {
 	for (int i = size/2; i >= 0; i--) {
-		max_heapify(array, i, size);
+		heapify(array, i, size);
 	}
 }
 
-void max_heapify(int array[],
-		 unsigned int start,
-		 unsigned int size)
+void min_heapify(int array[], unsigned int parent, unsigned int size)
 {
-	const unsigned int parent = start;
+	if (parent >= size) {
+		return;		// leaf
+	}
+
 	const unsigned int left_child = 2*parent + 1;
 	const unsigned int right_child = 2*parent + 2;
-	
+
+	unsigned int smallest = parent;
+
+	if (left_child < size && array[left_child] < array[smallest]) {
+		smallest = left_child;
+	}
+
+	if (right_child < size && array[smallest] > array[right_child]) {
+		smallest = right_child;
+	}
+
+	// parent was swapped
+	if (parent != smallest) {
+		swap(&array[smallest], &array[parent]);
+		min_heapify(array, smallest, size); // does subtree we swapped with follows heap property?
+	}
+}
+
+void max_heapify(int array[], unsigned int parent, unsigned int size)
+{
+	if (parent >= size) {
+		return;		// leaf
+	}
+
+	const unsigned int left_child = 2*parent + 1;
+	const unsigned int right_child = 2*parent + 2;
+
 	unsigned int largest = parent;
 
-	if (left_child < size
-	    && array[left_child] > array[largest]) {
+	if (left_child < size && array[left_child] > array[largest]) {
 		largest = left_child;
 	}
 
-	if (right_child < size
-	    && array[largest] < array[right_child]) {
+	if (right_child < size && array[largest] < array[right_child]) {
 		largest = right_child;
 	}
 
-	// parent was not the largest of three
+	// parent was swapped
 	if (parent != largest) {
 		swap(&array[largest], &array[parent]);
-		max_heapify(array, parent, size);
+		max_heapify(array, largest, size); // does subtree we swapped  with follows heap property?
 	}
 }
 
@@ -61,14 +89,12 @@ void heapsort(int array[], unsigned int size)
 	build_heap(array, size);
 
 	// top element is max, shrink the array size and work on the remaining
-	unsigned int end = size-1;
-	while (end > 0) {
+	for (int end = size-1; end > 0; --end) {
 		std::cout << end << "|";
 		print_array(array, size);
 
 		swap(&array[0], &array[end]);
-		end--;
-		max_heapify(array, 0, end+1);
+		heapify(array, 0, end);
 	}
 }
 
@@ -80,6 +106,7 @@ int main()
 	std::cout << "before:";
 	print_array(array, size);
 
+	// heapify = &max_heapify;
 	heapsort(array, size);
 
 	std::cout << "final:";
