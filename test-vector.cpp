@@ -43,24 +43,24 @@ class Point
 public:
 	Point(int a, int b)
 		: _a(a), _b(b)
-	{
-	}
+		{
+		}
 
 	int a() const { return _a; }
 	int b() const { return _b; }
 
 	std::string str() const
-	{
-		std::stringstream ss;
-		ss << "(" << _a << "," << _b << ")";
-		return ss.str();
-	}
+		{
+			std::stringstream ss;
+			ss << "(" << _a << "," << _b << ")";
+			return ss.str();
+		}
 
 	bool operator==(const Point& other) const
-	{
-		std::cout << "comparing " << str() << " with " << other.str() << "\n";
-		return a() == other.a() && b() == other.b();
-	}
+		{
+			std::cout << "comparing " << str() << " with " << other.str() << "\n";
+			return a() == other.a() && b() == other.b();
+		}
 
 private:
 	int _a;
@@ -92,7 +92,7 @@ void test_swap()
 		Swap(int m): mmember(m) {
 			std::cout << "Swap(" << member() << ")" << std::endl;
 		}
-		
+
 		~Swap() {
 			std::cout << "~Swap(" << member() << ")" << std::endl;
 		}
@@ -112,12 +112,22 @@ void test_swap()
 		Swap(1), Swap(2), Swap(3)
 	};
 
-	std::cout << "==swap now==" << std::endl;
+	std::cout << "\n==swap now==" << std::endl << std::endl;
 
 	std::vector<Swap> vtSwap;
 	vt.swap(vtSwap);
 
-	std::cout << "==swap end==" << std::endl;	
+	std::cout << "old:";
+	for (auto &i : vt) {
+		std::cout << "\t" << i.member();
+	}
+
+	std::cout << "\nnew:";
+	for (auto &i : vtSwap) {
+		std::cout << "\t" << i.member();
+	}
+
+	std::cout << "\n==swap end==" << std::endl << std::endl;
 }
 
 int main()
