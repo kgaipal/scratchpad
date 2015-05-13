@@ -1,5 +1,5 @@
 // comparing size, capacity and max_size
-// compile: g++ -std=c++11 test-vector.cpp
+// compile & run: g++ -std=c++11 test-vector.cpp && ./a.out
 
 #include <iostream>
 #include <sstream>
@@ -48,20 +48,20 @@ public:
 
 	int a() const { return _a; }
 	int b() const { return _b; }
-	
+
 	std::string str() const
 	{
 		std::stringstream ss;
 		ss << "(" << _a << "," << _b << ")";
 		return ss.str();
 	}
-	
+
 	bool operator==(const Point& other) const
 	{
 		std::cout << "comparing " << str() << " with " << other.str() << "\n";
 		return a() == other.a() && b() == other.b();
 	}
-	
+
 private:
 	int _a;
 	int _b;
@@ -83,9 +83,47 @@ void func3(const Point& point)
 	}
 }
 
+void test_swap()
+{
+
+	class Swap
+	{
+	public:
+		Swap(int m): mmember(m) {
+			std::cout << "Swap(" << member() << ")" << std::endl;
+		}
+		
+		~Swap() {
+			std::cout << "~Swap(" << member() << ")" << std::endl;
+		}
+
+		Swap(const Swap& other) {
+			std::cout << "Swap(Swap& " << other.member() << ")" << std::endl;
+			mmember = other.member();
+		}
+
+		int member() const { return mmember; }
+	private:
+		int mmember;
+
+	};
+
+	std::vector<Swap> vt = {
+		Swap(1), Swap(2), Swap(3)
+	};
+
+	std::cout << "==swap now==" << std::endl;
+
+	std::vector<Swap> vtSwap;
+	vt.swap(vtSwap);
+
+	std::cout << "==swap end==" << std::endl;	
+}
+
 int main()
 {
 	// func1();
 	// func2();
-	func3(Point(2,9));
+	// func3(Point(2,9));
+	test_swap();
 }
