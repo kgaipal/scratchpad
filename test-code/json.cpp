@@ -1,5 +1,5 @@
 // Compilation instructions:
-// g++ -std=gnu++11 -ljsoncpp test-json.cpp
+// g++ -std=gnu++11 -ljsoncpp json.cpp
 
 #include <jsoncpp/json/json.h>
 
@@ -116,18 +116,13 @@ int main()
 		Json::Value subtree;
 
 		for (int j = 0; j < 2; j++) {
-			std::string index, value;
+			std::string index;
+			int value = 22;
 
 			{
 				std::stringstream ss;
 				ss << "index_" << i<< "," << j;
 				index = (ss.str());
-			}
-
-			{
-				std::stringstream ss;
-				ss << "value_" << i<< "," << j;
-				value = ss.str();
 			}
 			subtree[index] = Json::Value(value);
 		}
@@ -136,7 +131,9 @@ int main()
 	}
 
 	Json::FastWriter writer;
-	std::cout << writer.write(root);
+	std::string s = writer.write(root);
+	std::cout << s;
+	std::cout << s.size();
 
 	return 0;
 }
