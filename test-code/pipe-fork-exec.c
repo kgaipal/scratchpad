@@ -1,5 +1,6 @@
 /* compile as gcc test-pipe-fork-exec.c */
 /* taken from : http://stackoverflow.com/a/8092270 */
+/* another example is from http://web.cse.ohio-state.edu/~mamrak/CIS762/pipes_lab_notes.html */
 
 #include <unistd.h>
 #include <stdlib.h>
