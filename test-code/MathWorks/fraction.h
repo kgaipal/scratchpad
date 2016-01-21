@@ -29,6 +29,7 @@
 class Fraction
 {
 public:
+
 	Fraction(int numer, int denom=1);
 	Fraction(const Fraction& other);
 
@@ -44,15 +45,13 @@ public:
 	bool operator>(const Fraction& other) const;
 	bool operator<(const Fraction& other) const;
 
-	const Fraction& operator+=(const Fraction& other);
-	const Fraction& operator-=(const Fraction& other);
-	const Fraction& operator*=(const Fraction& other);
-	const Fraction& operator/=(const Fraction& other);
-
 private:
 
-	inline int numerator() const { return m_numerator; }
-	inline int denominator() const { return m_denominator; }
+	inline bool isZero() const { return n() == 0; }
+	inline bool isOne() const { return (n() == d()) == 1; }
+
+	inline int n() const { return m_numerator; }
+	inline int d() const { return m_denominator; }
 
 	int m_numerator;
 	int m_denominator;

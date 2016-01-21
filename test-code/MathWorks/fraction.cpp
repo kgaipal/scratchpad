@@ -7,12 +7,12 @@ Fraction::Fraction(int numer, int denom)
 	: m_numerator(numer)
 	, m_denominator(denom)
 {
-	if (denominator() == 0) {
+	if (d() == 0) {
 		throw std::runtime_error(
 			"invalid fraction: denominator cant be zero");
 	}
 
-	if (numerator() == denominator()) {
+	if (n() == d()) {
 		m_numerator = m_denominator = 1;
 	}
 
@@ -21,78 +21,71 @@ Fraction::Fraction(int numer, int denom)
 }
 
 Fraction::Fraction(const Fraction& other)
-	: m_numerator(other.numerator())
-	, m_denominator(other.denominator())
+	: m_numerator(other.n())
+	, m_denominator(other.d())
 {
 }
 
 void Fraction::display() const
 {
-	if (numerator() == 0 || numerator() == denominator()) {
-		std::cout << numerator();
+	if (isZero() || isOne()) {
+		std::cout << n() << std::endl;
 	} else {
-		std::cout << numerator() << "/" << denominator();
+		std::cout << n() << "/" << d() << std::endl;
 	}
 }
 
 const Fraction Fraction::operator+(const Fraction& other) const
 {
-	if (denominator() == other.denominator()) {
-		return Fraction(
-			numerator() + other.numerator(),
-			denominator());
+	if (d() == other.d()) {
+		return Fraction(n() + other.n(), d());
 	}
 
-	// make denom equal
-	return Fraction(
-		(numerator() * other.denominator())
-		+ (denominator() * other.numerator()),
-		other.denominator() * denominator());
+	// make denominators equal
+	return Fraction((n() * other.d()) + (d() * other.n()), other.d() * d());
 }
 
 const Fraction Fraction::operator-(const Fraction& other) const
 {
 	// negate other fraction if this is zero
-	if (numerator() == 0) {
+	if (isZero()) {
 		return Fraction(Fraction(-1) * other);
 	}
 
 	// nothing to subtract if other fraction is zero
-	if (other.numerator() == 0) {
+	if (other.isZero()) {
 		return *this;
 	}
 
-	if (denominator() == other.denominator()) {
-		return Fraction(
-			numerator() - other.numerator(),
-			denominator());
+	if (d() == other.d()) {
+		return Fraction(n() - other.n(), d());
 	}
 
-	// make denom equal
+	// make denominators equal
 	return Fraction(
-		(numerator() * other.denominator())
-		- (denominator() * other.numerator()),
-		other.denominator() * denominator());
+		(n() * other.d()) - (d() * other.n()),
+		other.d() * d());
 }
 
 const Fraction Fraction::operator*(const Fraction& other) const
 {
-	return Fraction(
-		numerator() * other.numerator(),
-		denominator() * other.denominator());
+	return Fraction(n() * other.n(), d() * other.d());
 }
 
 const Fraction Fraction::operator/(const Fraction& other) const
 {
-	return Fraction(
-		numerator() * other.denominator(),
-		denominator() * other.numerator());
+	return Fraction(n() * other.d(), d() * other.n());
 }
 
 bool Fraction::operator==(const Fraction& other) const
 {
-	return (numerator() == other.numerator()
-		&& denominator() == other.denominator());
+	// if same denominators then only compare numerators
+	if (d() == other.d()) {
+		return n() == other.n();
+	}
+
+	// otherwise make denominators equal and then compare numerators
+	return ((n() * other.d()) == (other.n() * d()));
 }
 
 bool Fraction::operator!=(const Fraction& other) const
@@ -102,10 +95,22 @@ bool Fraction::operator!=(const Fraction& other) const
 
 bool Fraction::operator>(const Fraction& other) const
 {
-	return false;
+	// if same denominators then only compare numerators
+	if (d() == other.d()) {
+		return n() > other.n();
+	}
+
+	// otherwise make denominators equal and then compare numerators
+	return ((n() * other.d()) > (other.n() * d()));
 }
 
 bool Fraction::operator<(const Fraction& other) const
 {
-	return false;
+	// if same denominators then only compare numerators
+	if (d() == other.d()) {
+		return n() < other.n();
+	}
+
+	// otherwise make denominators equal and then compare numerators
+	return ((n() * other.d()) < (other.n() * d()));
 }
