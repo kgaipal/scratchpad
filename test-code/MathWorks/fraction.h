@@ -28,6 +28,7 @@
 // 6. greater than/less than
 
 #include <string>
+#include <iostream>
 
 class Fraction
 {
@@ -35,7 +36,7 @@ public:
 	Fraction(int numer, int denom=1);
 	Fraction(const Fraction& other);
 
-	void display() const;
+	inline void display() const { std::cout << toString() ; }
 	const std::string toString() const;
 
 	const Fraction operator+(const Fraction& other) const;
@@ -50,9 +51,11 @@ public:
 
 private:
 
+	void reduceFactors();
+
+	// util functions
 	inline bool isZero() const { return n() == 0; }
 	inline bool isOne() const { return (n() == d()) == 1; }
-
 	inline int n() const { return m_numerator; }
 	inline int d() const { return m_denominator; }
 
