@@ -2,28 +2,52 @@
 
 #include "../fraction.h"
 
+void compute(const Fraction& f1, const Fraction& f2)
+{
+	try {
+		std::cout << "\n-------------\n";
+		std::cout << "f1: " << f1.toString();
+		std::cout << "\nf2: " << f2.toString();
+		std::cout << std::endl;
+
+		std::cout << "\nf1 + f2 = " << (f1 + f2).toString();
+		std::cout << "\nf1 - f2 = " << (f1 - f2).toString();
+		std::cout << "\nf1 * f2 = " << (f1 * f2).toString();
+		std::cout << "\nf1 / f2 = " << (f1 / f2).toString();
+
+		std::cout << "\nf1 == f2? " << (f1 == f2);
+		std::cout << "\nf1 != f2? " << (f1 != f2);
+		std::cout << "\nf1 < f2 ? " << (f1 < f2);
+		std::cout << "\nf1 > f2 ? " << (f1 > f2);
+
+	} catch (std::exception& e) {
+		std::cout << "\nerror:" << e.what();
+	}
+	std::cout << std::endl;
+}
+
+void display(const Fraction& f)
+{
+	try {
+		std::cout << "f: " << f.toString();
+
+	} catch (std::exception& e) {
+		std::cout << "\nerror:" << e.what();
+	}
+	std::cout << std::endl;
+}
+
 int main()
 {
-	const Fraction f1(1,2), f2(1,1);
+	display(Fraction(3,4));
+	display(Fraction(7,7));
+	display(Fraction(4,8));
 
-	std::cout << "f1: ";
-	f1.display();
-	std::cout << "f2: ";
-	f2.display();
-
-	std::cout << std::endl;
-
-	std::cout << "f1 + f2 = ";
-	(f1 + f2).display();
-	std::cout << "f1 - f2 = ";
-	(f1 - f2).display();
-	std::cout << "f1 * f2 = ";
-	(f1 * f2).display();
-	std::cout << "f1 / f2 = ";
-	(f1 / f2).display();
-
-	std::cout << "f1 == f2? " << (f1 == f2) << std::endl;
-	std::cout << "f1 != f2? " << (f1 != f2) << std::endl;
-	std::cout << "f1 < f2 ? " << (f1 < f2) << std::endl;
-	std::cout << "f1 > f2 ? " << (f1 > f2) << std::endl;
+	compute(Fraction(1,2), Fraction(1,1));
+	compute(Fraction(1,2), Fraction(1,2));
+	compute(Fraction(1,2), Fraction(1,-2));
+	compute(Fraction(1,2), Fraction(-1,-2));
+	compute(Fraction(-1,2), Fraction(0,-2));
+	compute(Fraction(0,-2), Fraction(-1,2));
+	compute(Fraction(-1), Fraction(5));
 }

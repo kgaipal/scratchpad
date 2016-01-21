@@ -26,14 +26,17 @@
 // 4. division
 // 5. equality/non-equality
 // 6. greater than/less than
+
+#include <string>
+
 class Fraction
 {
 public:
-
 	Fraction(int numer, int denom=1);
 	Fraction(const Fraction& other);
 
 	void display() const;
+	const std::string toString() const;
 
 	const Fraction operator+(const Fraction& other) const;
 	const Fraction operator-(const Fraction& other) const;

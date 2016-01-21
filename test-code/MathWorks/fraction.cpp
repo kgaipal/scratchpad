@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <iostream>
+#include <sstream>
 
 Fraction::Fraction(int numer, int denom)
 	: m_numerator(numer)
@@ -10,6 +11,13 @@ Fraction::Fraction(int numer, int denom)
 	if (d() == 0) {
 		throw std::runtime_error(
 			"invalid fraction: denominator cant be zero");
+	}
+
+	// if both are -ive, reduce them to +ive,
+	// otherwise set numerator to -ive
+	if (d() < 0) {
+		m_denominator *= -1;
+		m_numerator *= -1;
 	}
 
 	if (n() == d()) {
@@ -28,11 +36,19 @@ Fraction::Fraction(const Fraction& other)
 
 void Fraction::display() const
 {
-	if (isZero() || isOne()) {
-		std::cout << n() << std::endl;
+	std::cout << toString();
+}
+
+const std::string Fraction::toString() const
+{
+	std::stringstream ss;
+	if (isZero() || isOne() || d() == 1) {
+		ss << n();
 	} else {
-		std::cout << n() << "/" << d() << std::endl;
+		ss << n() << "/" << d();
 	}
+
+	return ss.str();
 }
 
 const Fraction Fraction::operator+(const Fraction& other) const
@@ -74,6 +90,11 @@ const Fraction Fraction::operator*(const Fraction& other) const
 
 const Fraction Fraction::operator/(const Fraction& other) const
 {
+	if (other.isZero()) {
+		throw std::runtime_error("cant divided by zero");
+	}
+
+	// cross multiply
 	return Fraction(n() * other.d(), d() * other.n());
 }
 
