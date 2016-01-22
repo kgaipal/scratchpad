@@ -3,25 +3,28 @@
 #include <stdexcept>
 #include <sstream>
 
-void swap(int& a, int& b)
+template<typename T>
+void swap(T& a, T& b)
 {
 	a = a ^ b;
 	b = a ^ b;
 	a = a ^ b;
 }
 
-unsigned int gcd(unsigned int a, unsigned int b)
+template<typename T>
+T Fraction<T>::gcd(T a, T b)
 {
 	// borrowed from gcc
 	while (b != 0) {
-		int r = a % b;
+		T r = a % b;
 		a = b;
 		b = r;
 	}
 	return a;
 }
 
-Fraction::Fraction(int numer, int denom)
+template<typename T>
+Fraction<T>::Fraction(T numer, T denom)
 	: m_numerator(numer)
 	, m_denominator(denom)
 {
@@ -33,7 +36,8 @@ Fraction::Fraction(int numer, int denom)
 	reduceFactors();
 }
 
-void Fraction::reduceFactors()
+template<typename T>
+void Fraction<T>::reduceFactors()
 {
 	// sign reduction
 	// propagate sign from denominator to numerator
@@ -63,13 +67,15 @@ void Fraction::reduceFactors()
 	}
 }
 
-Fraction::Fraction(const Fraction& other)
+template<typename T>
+Fraction<T>::Fraction(const Fraction<T>& other)
 	: m_numerator(other.n())
 	, m_denominator(other.d())
 {
 }
 
-const std::string Fraction::toString() const
+template<typename T>
+const std::string Fraction<T>::toString() const
 {
 	std::stringstream ss;
 	if (d() == 0 || n() == d() || d() == 1) {
@@ -81,7 +87,8 @@ const std::string Fraction::toString() const
 	return ss.str();
 }
 
-const Fraction Fraction::operator+(const Fraction& other) const
+template<typename T>
+const Fraction<T> Fraction<T>::operator+(const Fraction<T>& other) const
 {
 	// equal denominators
 	if (d() == other.d()) {
@@ -92,7 +99,8 @@ const Fraction Fraction::operator+(const Fraction& other) const
 	return Fraction((n() * other.d()) + (d() * other.n()), d() * other.d());
 }
 
-const Fraction Fraction::operator-(const Fraction& other) const
+template<typename T>
+const Fraction<T> Fraction<T>::operator-(const Fraction<T>& other) const
 {
 	// equal denominators
 	if (d() == other.d()) {
@@ -103,17 +111,20 @@ const Fraction Fraction::operator-(const Fraction& other) const
 	return Fraction((n() * other.d()) - (d() * other.n()), d() * other.d());
 }
 
-const Fraction Fraction::operator*(const Fraction& other) const
+template<typename T>
+const Fraction<T> Fraction<T>::operator*(const Fraction<T>& other) const
 {
 	return Fraction(n() * other.n(), d() * other.d());
 }
 
-const Fraction Fraction::operator/(const Fraction& other) const
+template<typename T>
+const Fraction<T> Fraction<T>::operator/(const Fraction<T>& other) const
 {
 	return Fraction(n() * other.d(), d() * other.n());
 }
 
-bool Fraction::operator==(const Fraction& other) const
+template<typename T>
+bool Fraction<T>::operator==(const Fraction<T>& other) const
 {
 	if (d() == other.d()) {
 		return n() == other.n();
@@ -123,12 +134,14 @@ bool Fraction::operator==(const Fraction& other) const
 	return ((n() * other.d()) == (d() * other.n()));
 }
 
-bool Fraction::operator!=(const Fraction& other) const
+template<typename T>
+bool Fraction<T>::operator!=(const Fraction<T>& other) const
 {
 	return !(*this == other);
 }
 
-bool Fraction::operator>(const Fraction& other) const
+template<typename T>
+bool Fraction<T>::operator>(const Fraction<T>& other) const
 {
 	if (d() == other.d()) {
 		return n() > other.n();
@@ -138,7 +151,8 @@ bool Fraction::operator>(const Fraction& other) const
 	return ((n() * other.d()) > (d() * other.n()));
 }
 
-bool Fraction::operator<(const Fraction& other) const
+template<typename T>
+bool Fraction<T>::operator<(const Fraction<T>& other) const
 {
 	// if same denominators then only compare numerators
 	if (d() == other.d()) {

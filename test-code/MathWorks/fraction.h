@@ -27,13 +27,17 @@
 // 5. equality/non-equality
 // 6. greater than/less than
 
+#ifndef _FRACTION_H_
+#define _FRACTION_H_
+
 #include <string>
 #include <iostream>
 
+template<typename T>
 class Fraction
 {
 public:
-	Fraction(int numer, int denom=1);
+	Fraction(T numer, T denom=1);
 	Fraction(const Fraction& other);
 
 	inline void display() const { std::cout << toString() ; }
@@ -54,9 +58,14 @@ private:
 	void reduceFactors();
 
 	// util functions
-	inline int n() const { return m_numerator; }
-	inline int d() const { return m_denominator; }
+	inline T n() const { return m_numerator; }
+	inline T d() const { return m_denominator; }
+	static T gcd(T a, T b);
 
-	int m_numerator;
-	int m_denominator;
+	T m_numerator;
+	T m_denominator;
 };
+
+#include "fraction.cpp"
+
+#endif	// _FRACTION_H_
