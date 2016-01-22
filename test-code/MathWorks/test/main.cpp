@@ -39,18 +39,19 @@ void display(const Fraction& f)
 
 int main()
 {
-	display(Fraction(3,4));
-	display(Fraction(7,7));
-	display(Fraction(14,7));
-	display(Fraction(7,-14));
-	display(Fraction(13,-39));
-	display(Fraction(39,-13));
+	// display(Fraction(3,4));
+	// display(Fraction(7,7));
+	// display(Fraction(14,7));
+	// display(Fraction(7,-14));
+	// display(Fraction(13,-39));
+	// display(Fraction(39,-13));
 
-	compute(Fraction(1,2), Fraction(1,1));
-	compute(Fraction(1,2), Fraction(1,2));
+	compute(Fraction(1,3), Fraction(2,4));
+	// compute(Fraction(1,2), Fraction(1,1));
+	// compute(Fraction(1,2), Fraction(1,2));
 	compute(Fraction(1,2), Fraction(1,-2));
-	compute(Fraction(1,2), Fraction(-1,-2));
-	compute(Fraction(-1,2), Fraction(0,-2));
-	compute(Fraction(0,-2), Fraction(-1,2));
-	compute(Fraction(-1), Fraction(5));
+	// compute(Fraction(1,2), Fraction(-1,-2));
+	// compute(Fraction(-1,2), Fraction(0,-2));
+	// compute(Fraction(-1,2), Fraction(0,-2));
+	// compute(Fraction(-1), Fraction(5));
 }

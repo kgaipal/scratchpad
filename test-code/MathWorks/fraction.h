@@ -54,8 +54,6 @@ private:
 	void reduceFactors();
 
 	// util functions
-	inline bool isZero() const { return n() == 0; }
-	inline bool isOne() const { return (n() == d()) == 1; }
 	inline int n() const { return m_numerator; }
 	inline int d() const { return m_denominator; }
 

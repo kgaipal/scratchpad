@@ -26,8 +26,7 @@ Fraction::Fraction(int numer, int denom)
 	, m_denominator(denom)
 {
 	if (d() == 0) {
-		throw std::runtime_error(
-			"invalid fraction: denominator cant be zero");
+		throw std::runtime_error("invalid fraction: denominator cant be zero");
 	}
 
 	// simplify
@@ -52,7 +51,7 @@ void Fraction::reduceFactors()
 
 	// multiples reduction
 	// TODO: for efficiency rather calculate gcd() before displaying?
-	int g = 0;		// no loss of precision
+	int g = 0;		// no loss of precision in signed gcd
 	if (n() < 0) {
 		g = gcd(-1 * n(), d());
 	} else {
@@ -73,7 +72,7 @@ Fraction::Fraction(const Fraction& other)
 const std::string Fraction::toString() const
 {
 	std::stringstream ss;
-	if (isZero() || isOne() || d() == 1) {
+	if (d() == 0 || n() == d() || d() == 1) {
 		ss << n();
 	} else {
 		ss << n() << "/" << d();
@@ -89,31 +88,19 @@ const Fraction Fraction::operator+(const Fraction& other) const
 		return Fraction(n() + other.n(), d());
 	}
 
-	// unequal denominators
-	return Fraction((n() * other.d()) + (d() * other.n()), other.d() * d());
+	// unequal denominators, make denominators equal and then add
+	return Fraction((n() * other.d()) + (d() * other.n()), d() * other.d());
 }
 
 const Fraction Fraction::operator-(const Fraction& other) const
 {
-	// negate other fraction if this is zero
-	if (isZero()) {
-		return Fraction(Fraction(-1) * other);
-	}
-
-	// nothing to subtract if other fraction is zero
-	if (other.isZero()) {
-		return *this;
-	}
-
 	// equal denominators
 	if (d() == other.d()) {
 		return Fraction(n() - other.n(), d());
 	}
 
-	// unequal denominators
-	return Fraction(
-		(n() * other.d()) - (d() * other.n()),
-		other.d() * d());
+	// unequal denominators, make denominators equal and then subtract
+	return Fraction((n() * other.d()) - (d() * other.n()), d() * other.d());
 }
 
 const Fraction Fraction::operator*(const Fraction& other) const
@@ -123,10 +110,6 @@ const Fraction Fraction::operator*(const Fraction& other) const
 
 const Fraction Fraction::operator/(const Fraction& other) const
 {
-	if (other.isZero()) {
-		throw std::runtime_error("cant divided by zero");
-	}
-
 	return Fraction(n() * other.d(), d() * other.n());
 }
 
@@ -137,7 +120,7 @@ bool Fraction::operator==(const Fraction& other) const
 	}
 
 	// otherwise make denominators equal and then compare numerators
-	return ((n() * other.d()) == (other.n() * d()));
+	return ((n() * other.d()) == (d() * other.n()));
 }
 
 bool Fraction::operator!=(const Fraction& other) const
@@ -152,7 +135,7 @@ bool Fraction::operator>(const Fraction& other) const
 	}
 
 	// otherwise make denominators equal and then compare numerators
-	return ((n() * other.d()) > (other.n() * d()));
+	return ((n() * other.d()) > (d() * other.n()));
 }
 
 bool Fraction::operator<(const Fraction& other) const
@@ -163,5 +146,5 @@ bool Fraction::operator<(const Fraction& other) const
 	}
 
 	// otherwise make denominators equal and then compare numerators
-	return ((n() * other.d()) < (other.n() * d()));
+	return ((n() * other.d()) < (d() * other.n()));
 }
