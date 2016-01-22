@@ -55,12 +55,13 @@ void Fraction<T>::reduceFactors()
 
 	// multiples reduction
 	// TODO: for efficiency rather calculate gcd() before displaying?
-	int g = 0;		// no loss of precision in signed gcd
+	T g;		// no loss of precision in signed gcd (if int)
 	if (n() < 0) {
-		g = gcd(-1 * n(), d());
+		g = gcd(n() * -1, d());
 	} else {
 		g = gcd(n(), d());
 	}
+
 	if (g > 1) {
 		m_numerator /= g;
 		m_denominator /= g;
