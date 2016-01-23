@@ -66,8 +66,6 @@ public:
 	bool operator<(const Fraction& other) const;
 
 private:
-	void reduceFactors();
-
 	// util functions
 	inline T n() const { return m_numerator; }
 	inline T d() const { return m_denominator; }

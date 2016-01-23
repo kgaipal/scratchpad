@@ -6,13 +6,13 @@
 template<typename T>
 T gcd(T a, T b)
 {
-	// borrowed from gcc
-	while (b != 0) {
-		T r = a % b;
-		a = b;
-		b = r;
-	}
-	return a;
+	// no-op
+}
+
+template<typename T>
+void reduce(T& numerator, T& denominator)
+{
+	// no-op
 }
 
 // int specialization
@@ -36,6 +36,19 @@ int gcd(int a, int b)
 	return a;
 }
 
+// int specialization
+template<>
+void reduce(int& numerator, int& denominator)
+{
+	// multiples reduction
+	const int g = gcd(numerator, denominator);
+
+	if (g != 1/*1 is everybody's divisor*/) {
+		numerator /= g;
+		denominator /= g;
+	}
+}
+
 template<typename T>
 Fraction<T>::Fraction(T numer, T denom)
 	: m_numerator(numer)
@@ -46,13 +59,6 @@ Fraction<T>::Fraction(T numer, T denom)
 			"invalid fraction: denominator cant be zero");
 	}
 
-	// simplify
-	reduceFactors();
-}
-
-template<typename T>
-void Fraction<T>::reduceFactors()
-{
 	// propagate sign from denominator to numerator
 	// -a/-b is a/b
 	// a/-b is -a/b
@@ -66,13 +72,8 @@ void Fraction<T>::reduceFactors()
 		m_numerator = m_denominator = 1;
 	}
 
-	// multiples reduction
-	const T g = gcd(n(), d());
-
-	if (g != 1/*1 is everybody's divisor*/) {
-		m_numerator /= g;
-		m_denominator /= g;
-	}
+	// simplify
+	reduce(m_numerator, m_denominator);
 }
 
 template<typename T>
