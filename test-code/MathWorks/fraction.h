@@ -60,7 +60,6 @@ private:
 	// util functions
 	inline T n() const { return m_numerator; }
 	inline T d() const { return m_denominator; }
-	static T gcd(T a, T b);
 
 	T m_numerator;
 	T m_denominator;
