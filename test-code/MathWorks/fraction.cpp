@@ -4,19 +4,11 @@
 #include <sstream>
 
 template<typename T>
-T gcd(T a, T b)
-{
-	// no-op
-}
-
-template<typename T>
 void reduce(T& numerator, T& denominator)
 {
 	// no-op
 }
 
-// int specialization
-template<>
 int gcd(int a, int b)
 {
 	if (a < 0) {
