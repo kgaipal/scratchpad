@@ -62,6 +62,6 @@ int main()
 	compute(Fraction<int>(1,2), Fraction<int>(1,-2));
 	compute(Fraction<int>(1,2), Fraction<int>(-1,-2));
 	compute(Fraction<int>(-1,2), Fraction<int>(0,-2));
-	compute(Fraction<int>(-1,2), Fraction<int>(0,-2));
 	compute(Fraction<int>(-1), Fraction<int>(5));
+	compute(Fraction<int>(1,1), Fraction<int>(1,1));
 }

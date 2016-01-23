@@ -6,8 +6,6 @@
 template<typename T>
 T gcd(T a, T b)
 {
-	std::cout << "gcd(): generic\n";
-
 	// borrowed from gcc
 	while (b != 0) {
 		T r = a % b;
@@ -17,11 +15,10 @@ T gcd(T a, T b)
 	return a;
 }
 
+// int specialization
 template<>
 int gcd(int a, int b)
 {
-	std::cout << "gcd(): specialization:int\n";
-
 	if (a < 0) {
 		a *= -1;
 	}
@@ -56,7 +53,6 @@ Fraction<T>::Fraction(T numer, T denom)
 template<typename T>
 void Fraction<T>::reduceFactors()
 {
-	// sign reduction
 	// propagate sign from denominator to numerator
 	// -a/-b is a/b
 	// a/-b is -a/b
@@ -71,10 +67,9 @@ void Fraction<T>::reduceFactors()
 	}
 
 	// multiples reduction
-	T g = 1;		// default: 1 is everybody's divisor
-	g = gcd(n(), d());
+	const T g = gcd(n(), d());
 
-	if (g != 1/*found some valid divisor*/) {
+	if (g != 1/*1 is everybody's divisor*/) {
 		m_numerator /= g;
 		m_denominator /= g;
 	}

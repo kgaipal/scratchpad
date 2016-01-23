@@ -54,7 +54,6 @@ public:
 	bool operator<(const Fraction& other) const;
 
 private:
-
 	void reduceFactors();
 
 	// util functions
