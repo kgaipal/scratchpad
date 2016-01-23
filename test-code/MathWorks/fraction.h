@@ -40,10 +40,11 @@
 
 // Note: Templatization for Fraction class below can be useful for
 // non-integer fractions. For e.g. Algaebric expressions, radical
-// numbers as denominators/numerators in a fraction, etc.
+// numbers, etc can also be denominators/numerators in a fraction.
 // (https://en.wikipedia.org/wiki/Fraction_%28mathematics%29#Algebraic_fractions).
 // In such a case approriate class needs to implement various
-// arithmetic operators of this class.
+// arithmetic operators of this class. Also these other types of data
+// classes can implement their own reduce functions if necessary.
 //
 template<typename T>
 class Fraction

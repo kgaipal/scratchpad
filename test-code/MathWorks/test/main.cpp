@@ -11,20 +11,16 @@ template<typename T>
 void compute(const Fraction<T>& f1, const Fraction<T>& f2)
 {
 	try {
-		std::cout << "\n-------------\n";
-		std::cout << "f1: " << f1.toString();
-		std::cout << "\nf2: " << f2.toString();
-		std::cout << std::endl;
+		std::cout << "-------------";
 
-		std::cout << "\nf1 + f2 = " << (f1 + f2).toString();
-		std::cout << "\nf1 - f2 = " << (f1 - f2).toString();
-		std::cout << "\nf1 * f2 = " << (f1 * f2).toString();
-		std::cout << "\nf1 / f2 = " << (f1 / f2).toString();
-
-		std::cout << "\nf1 == f2? " << (f1 == f2);
-		std::cout << "\nf1 != f2? " << (f1 != f2);
-		std::cout << "\nf1 < f2 ? " << (f1 < f2);
-		std::cout << "\nf1 > f2 ? " << (f1 > f2);
+		std::cout << "\n" << f1.toString() << " < "  << f2.toString() << " ? " << (f1 < f2);
+		std::cout << "\n" << f1.toString() << " > "  << f2.toString() << " ? " << (f1 > f2);
+		std::cout << "\n" << f1.toString() << " == " << f2.toString() << "? "  << (f1 == f2);
+		std::cout << "\n" << f1.toString() << " != " << f2.toString() << "? "  << (f1 != f2);
+		std::cout << "\n" << f1.toString() << " + "  << f2.toString() << " = " << (f1 + f2).toString();
+		std::cout << "\n" << f1.toString() << " - "  << f2.toString() << " = " << (f1 - f2).toString();
+		std::cout << "\n" << f1.toString() << " * "  << f2.toString() << " = " << (f1 * f2).toString();
+		std::cout << "\n" << f1.toString() << " / "  << f2.toString() << " = " << (f1 / f2).toString();
 
 	} catch (std::exception& e) {
 		std::cout << "\nerror:" << e.what();
@@ -46,8 +42,9 @@ void display(const Fraction<T>& f)
 
 int main()
 {
-	AlgebraicExpression a, d;
-	display(Fraction<AlgebraicExpression>(a, d));
+	std::cout << "==== display only ====" << std::endl;
+	// AlgebraicExpression a, d;
+	// display(Fraction<AlgebraicExpression>(a, d));
 
 	display(Fraction<int>(3,4));
 	display(Fraction<int>(7,7));
@@ -55,6 +52,8 @@ int main()
 	display(Fraction<int>(7,-14));
 	display(Fraction<int>(13,-39));
 	display(Fraction<int>(39,-13));
+
+	std::cout << "==== compute only ====" << std::endl;
 
 	compute(Fraction<int>(1,3), Fraction<int>(2,4));
 	compute(Fraction<int>(1,2), Fraction<int>(1,1));
