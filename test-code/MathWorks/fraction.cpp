@@ -4,19 +4,35 @@
 #include <sstream>
 
 template<typename T>
-void swap(T& a, T& b)
+T gcd(T a, T b)
 {
-	a = a ^ b;
-	b = a ^ b;
-	a = a ^ b;
-}
+	std::cout << "gcd(): generic\n";
 
-template<typename T>
-T Fraction<T>::gcd(T a, T b)
-{
 	// borrowed from gcc
 	while (b != 0) {
 		T r = a % b;
+		a = b;
+		b = r;
+	}
+	return a;
+}
+
+template<>
+int gcd(int a, int b)
+{
+	std::cout << "gcd(): specialization:int\n";
+
+	if (a < 0) {
+		a *= -1;
+	}
+
+	if (b < 0) {
+		b *= -1;
+	}
+
+	// borrowed from gcc
+	while (b != 0) {
+		int r = a % b;
 		a = b;
 		b = r;
 	}
@@ -29,7 +45,8 @@ Fraction<T>::Fraction(T numer, T denom)
 	, m_denominator(denom)
 {
 	if (d() == 0) {
-		throw std::runtime_error("invalid fraction: denominator cant be zero");
+		throw std::runtime_error(
+			"invalid fraction: denominator cant be zero");
 	}
 
 	// simplify
@@ -54,15 +71,10 @@ void Fraction<T>::reduceFactors()
 	}
 
 	// multiples reduction
-	// TODO: for efficiency rather calculate gcd() before displaying?
-	T g;		// no loss of precision in signed gcd (if int)
-	if (n() < 0) {
-		g = gcd(n() * -1, d());
-	} else {
-		g = gcd(n(), d());
-	}
+	T g = 1;		// default: 1 is everybody's divisor
+	g = gcd(n(), d());
 
-	if (g > 1) {
+	if (g != 1/*found some valid divisor*/) {
 		m_numerator /= g;
 		m_denominator /= g;
 	}
