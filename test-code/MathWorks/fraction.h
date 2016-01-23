@@ -39,19 +39,17 @@
 #include <iostream>
 
 // Note: Templatization for Fraction class below can be useful for
-// non-integer fractions. For e.g. Algaebric expressions, irrational
-// numbers as denominators/numerators in a fraction ,etc. In such a
-// case approriate class needs to implement various arithmetic
-// operators of this class.
+// non-integer fractions. For e.g. Algaebric expressions, radical
+// numbers as denominators/numerators in a fraction, etc.
+// (https://en.wikipedia.org/wiki/Fraction_%28mathematics%29#Algebraic_fractions).
+// In such a case approriate class needs to implement various
+// arithmetic operators of this class.
 //
-// TODO(kgaipal): For now it is assumed that both numerator and
-// denominator are of same type, this can be changed with introducing
-// anothere template parameter easily.
 template<typename T>
 class Fraction
 {
 public:
-	Fraction(T numer, T denom=1);
+	Fraction(T numer, T denom=1/*if set, represent whole number*/);
 	Fraction(const Fraction& other);
 
 	inline void display() const { std::cout << toString() ; }
