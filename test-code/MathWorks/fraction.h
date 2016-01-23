@@ -1,6 +1,9 @@
-// Jan 20, 2016
+// Jan 23, 2016
 // Kshitij Gaipal
 
+
+// Text verbatim from James.Lebak@mathworks.com:
+// ---------------------------------------------
 // I’m writing in regard to your application for a C++ software
 // engineer position at MathWorks. We’ve received your application and
 // are impressed with your credentials. As the next step in the
@@ -27,12 +30,23 @@
 // 5. equality/non-equality
 // 6. greater than/less than
 
+// --------------------------------------------
+
 #ifndef _FRACTION_H_
 #define _FRACTION_H_
 
 #include <string>
 #include <iostream>
 
+// Note: Templatization for Fraction class below can be useful for
+// non-integer fractions. For e.g. Algaebric expressions, irrational
+// numbers as denominators/numerators in a fraction ,etc. In such a
+// case approriate class needs to implement various arithmetic
+// operators of this class.
+//
+// TODO(kgaipal): For now it is assumed that both numerator and
+// denominator are of same type, this can be changed with introducing
+// anothere template parameter easily.
 template<typename T>
 class Fraction
 {
