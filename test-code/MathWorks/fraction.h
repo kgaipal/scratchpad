@@ -53,7 +53,7 @@ public:
 	Fraction(T numer, T denom=1/*if set, represent whole number*/);
 	Fraction(const Fraction& other);
 
-	inline void display() const { std::cout << toString() ; }
+	inline void display() const { std::cout << toString() << "\n"; }
 	const std::string toString() const;
 
 	const Fraction operator+(const Fraction& other) const;
