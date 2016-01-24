@@ -3,12 +3,14 @@
 #include <stdexcept>
 #include <sstream>
 
+// reduces given fraction to simpler terms
 template<typename T>
 void reduce(T& numerator, T& denominator)
 {
 	// no-op
 }
 
+// computes greatest common divisor
 int gcd(int a, int b)
 {
 	if (a < 0) {
@@ -28,7 +30,7 @@ int gcd(int a, int b)
 	return a;
 }
 
-// int specialization
+// specialization(integer) for reducing fraction to simpler terms
 template<>
 void reduce(int& numerator, int& denominator)
 {
@@ -64,7 +66,7 @@ Fraction<T>::Fraction(T numer, T denom)
 		m_numerator = m_denominator = 1;
 	}
 
-	// simplify
+	// simplify terms
 	reduce(m_numerator, m_denominator);
 }
 
