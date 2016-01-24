@@ -20,16 +20,6 @@
 // project should take on the order of several hours. If you have some
 // ideas that would take longer to implement please write them down
 // for discussion.
-
-// Class represents a fraction and computes following mathematical
-// operations on any given two such instances:
-// 1. addition
-// 2. subtraction
-// 3. multiplication
-// 4. division
-// 5. equality/non-equality
-// 6. greater than/less than
-
 // --------------------------------------------
 
 #ifndef _FRACTION_H_
@@ -37,6 +27,15 @@
 
 #include <string>
 #include <iostream>
+
+// Fraction class represents a fraction and computes following
+// mathematical operations on any given two such instances:
+// 1. addition
+// 2. subtraction
+// 3. multiplication
+// 4. division
+// 5. equality/non-equality
+// 6. greater than/less than
 
 // Note: Templatization for Fraction class below can be useful for
 // non-integer fractions. For e.g. Algaebric expressions, radical
