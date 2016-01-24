@@ -2,7 +2,7 @@
 // Kshitij Gaipal
 
 
-// Text verbatim from James.Lebak@mathworks.com:
+// Text verbatim from mathworks.com:
 // ---------------------------------------------
 // I’m writing in regard to your application for a C++ software
 // engineer position at MathWorks. We’ve received your application and
