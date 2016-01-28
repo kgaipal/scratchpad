@@ -69,7 +69,8 @@ private:
 	// util functions
 	inline T n() const { return m_numerator; }
 	inline T d() const { return m_denominator; }
-
+	inline void reduce(T& numerator, T& denominator);
+	
 	T m_numerator;
 	T m_denominator;
 };

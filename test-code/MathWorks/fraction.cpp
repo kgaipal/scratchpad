@@ -5,7 +5,7 @@
 
 // reduces given fraction to simpler terms
 template<typename T>
-void reduce(T& numerator, T& denominator)
+void Fraction<T>::reduce(T& numerator, T& denominator)
 {
 	// no-op
 }
@@ -32,7 +32,7 @@ int gcd(int a, int b)
 
 // specialization(integer) for reducing fraction to simpler terms
 template<>
-void reduce(int& numerator, int& denominator)
+void Fraction<int>::reduce(int& numerator, int& denominator)
 {
 	// multiples reduction
 	const int g = gcd(numerator, denominator);
