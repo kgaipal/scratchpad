@@ -1,0 +1,39 @@
+Please use this Google doc to code during your interview. To make hands free coding a little easier, we recommend that you use a headset or a phone with speaker option.
+
+Best,
+Google Staffing
+
+
+
+Hello.  Is this XXX?
+Yes
+Good, we can both see each others typing.  I’m going to call you in a minute or two.  Hopefully you are in a position where you can be on the phone and type.
+Yes you can call me on Xxxx
+
+Ok.  I will use that number.
+k
+
+------ begin ------
+int pick_random(int n); // return a random number between 0 and n-1
+#define SWAP(x,y) { int tmp = x; x = y; y = tmp; }
+
+int* sfl(int n) {
+
+  int* res = new int[n];
+
+  for (int i = 0; i < n; i=i + 1) {
+    res[i] = i; // array contents: 0 1 2 3 ... n-1
+  }
+
+  for (int i = n; i >= 1; --i) {
+    int tmp = pick_random(i);
+    SWAP(res[i], res[tmp]);  // replaced with: '{ int tmp = res[i]; res[i] = res[tmp]; res[tmp] = tmp; }'
+    		 	     // intention is: shuffle 
+  }
+
+  // missing: no return value
+
+}
+----- end -------
+
+
