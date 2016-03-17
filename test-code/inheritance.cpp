@@ -141,7 +141,23 @@ void func4()
 {
 	using namespace enum_inheritance;
 
-	Derived d;
+	for (unsigned status = 0; status < 4; status++) {
+		std::cout << "trying: " << status << " ";
+		switch (status) {
+		case Derived::statusCodeEx::eCertFailed:
+			std::cout << "cert failed\n";
+			break;
+		case Derived::statusCodeEx::eStarting:
+			std::cout << "starting\n";
+			break;
+		case Derived::statusCodeEx::eFailed:
+			std::cout << "failed\n";
+			break;
+		default:
+			std::cout << "unknown\n";		
+			break;
+		}
+	}
 }
 
 int main()
