@@ -4,34 +4,34 @@ void func1()
 {
 	// class A;
 	// auto manipulateI = [&] (A &a) {
-	// 	a.m_i = 9;
+	//	a.m_i = 9;
 	// };
 
 	// class A
 	// {
 	// public:
-	// 	A()
-	// 	: m_i(-1)
-	// 	{
-	// 	}
+	//	A()
+	//	: m_i(-1)
+	//	{
+	//	}
 
-	// 	int printI() const { return m_i; }
+	//	int printI() const { return m_i; }
 
-	// 	friend void manipulateI(A& a);
+	//	friend void manipulateI(A& a);
 
 	// protected:
-	// 	int m_i;
+	//	int m_i;
 	// };
 
 
 	// class B : public A
 	// {
 	// public:
-	// 	B()
-	// 	: A()
-	// 	{
-	// 		A::m_i = -2;
-	// 	}
+	//	B()
+	//	: A()
+	//	{
+	//		A::m_i = -2;
+	//	}
 	// };
 
 	// A a;
@@ -66,10 +66,106 @@ void func2()
 	std::cout << sizeof(d) << std::endl;
 }
 
+void func3()
+{
+	class Base {
+	public:
+		virtual void print() {
+			std::cout << "base::print()" << std::endl;
+		}
+	};
+
+
+	class DerivedA : public Base {
+	public:
+		void print() {
+			std::cout << "derivedA::print()" << std::endl;
+		}
+	};
+
+	class DerivedB : public Base {
+	public:
+		void print() {
+			std::cout << "derivedB::print()" << std::endl;
+		}
+	};
+
+	class User {
+	public:
+		User(Base& base)
+			: mbase(base) {
+		}
+
+		void print() {
+			mbase.print();
+		}
+	private:
+		Base& mbase;
+	};
+
+	DerivedA da;
+	User usera(da);
+	usera.print();
+
+	DerivedB db;
+	User userb(db);
+	userb.print();
+}
+
+
+namespace enum_inheritance
+{
+	class Base {
+	public:
+		struct statusCode {
+			static const unsigned eStarting;
+			static const unsigned eFailed;
+		};
+
+	};
+
+	class Derived : public Base {
+	public:
+		struct statusCodeEx : public statusCode {
+			static const unsigned eCertFailed;
+		};
+	};
+
+	const unsigned Base::statusCode::eStarting = 0;
+	const unsigned Base::statusCode::eFailed = 1;
+	const unsigned Derived::statusCodeEx::eCertFailed = 3;
+
+} // namespace enum_inheritance
+
+void func4()
+{
+	using namespace enum_inheritance;
+
+	for (unsigned status = 0; status < 4; status++) {
+		std::cout << "trying: " << status << " ";
+		switch (status) {
+		case Derived::statusCodeEx::eCertFailed:
+			std::cout << "cert failed\n";
+			break;
+		case Derived::statusCodeEx::eStarting:
+			std::cout << "starting\n";
+			break;
+		case Derived::statusCodeEx::eFailed:
+			std::cout << "failed\n";
+			break;
+		default:
+			std::cout << "unknown\n";		
+			break;
+		}
+	}
+}
+
 int main()
 {
 	// func1();
-	func2();
+	// func2();
+	// func3();
+	func4();
 
 	return 0;
 }

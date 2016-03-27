@@ -52,14 +52,17 @@ public:
 	Fraction(T numer, T denom=1/*if set, represent whole number*/);
 	Fraction(const Fraction& other);
 
+	// util functions
 	inline void display() const { std::cout << toString() << "\n"; }
 	const std::string toString() const;
 
+	// binary operators
 	const Fraction operator+(const Fraction& other) const;
 	const Fraction operator-(const Fraction& other) const;
 	const Fraction operator*(const Fraction& other) const;
 	const Fraction operator/(const Fraction& other) const;
 
+	// equality operators
 	bool operator==(const Fraction& other) const;
 	bool operator!=(const Fraction& other) const;
 	bool operator>(const Fraction& other) const;
@@ -70,7 +73,7 @@ private:
 	inline T n() const { return m_numerator; }
 	inline T d() const { return m_denominator; }
 	inline void reduce(T& numerator, T& denominator);
-	
+
 	T m_numerator;
 	T m_denominator;
 };
