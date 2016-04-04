@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <algorithm>
 
-#include "FastDeque.h"
+#include "Bomgar/FastDeque.h"
 
 class A
 {
@@ -43,33 +43,33 @@ protected:
 
 // void deque_noptr()
 // {
-// 	std::deque<A> dq;
+//	std::deque<A> dq;
 
-// 	for (int i = 1; i < 10; i++) {
-// 		dq.push_back(A(i));
-// 	}
+//	for (int i = 1; i < 10; i++) {
+//		dq.push_back(A(i));
+//	}
 
-// 	for (auto it = dq.begin(); it != dq.end() ; it++) {
-// 		std::cout << it->getI() << " ";
-// 	}
-// 	std::cout << std::endl;
+//	for (auto it = dq.begin(); it != dq.end() ; it++) {
+//		std::cout << it->getI() << " ";
+//	}
+//	std::cout << std::endl;
 
-// 	A sItem(10);
+//	A sItem(10);
 
-// 	auto it = std::find(dq.begin(), dq.end(), sItem);
-// 	std::cout << sItem.getI()
-// 		  << (it != dq.end()? " found" : " failed") << std::endl;
-// 	it++;
+//	auto it = std::find(dq.begin(), dq.end(), sItem);
+//	std::cout << sItem.getI()
+//		  << (it != dq.end()? " found" : " failed") << std::endl;
+//	it++;
 
-// 	if (it != dq.end()) {
-// 		std::cout << "next: " << it->getI() << std::endl;
-// 	}
+//	if (it != dq.end()) {
+//		std::cout << "next: " << it->getI() << std::endl;
+//	}
 
-// 	sItem = A(11);
+//	sItem = A(11);
 
-// 	it = std::find(dq.begin(), dq.end(), sItem);
-// 	std::cout << sItem.getI()
-// 		  << (it != dq.end()? " found" : " failed") << std::endl;
+//	it = std::find(dq.begin(), dq.end(), sItem);
+//	std::cout << sItem.getI()
+//		  << (it != dq.end()? " found" : " failed") << std::endl;
 // }
 
 bool find_in_deque(const std::deque< std::shared_ptr<A> >& dq, const A& sItem)
@@ -84,38 +84,38 @@ bool find_in_deque(const std::deque< std::shared_ptr<A> >& dq, const A& sItem)
 
 // void deqeue_withptr()
 // {
-// 	std::deque< std::shared_ptr<A> > dq;
+//	std::deque< std::shared_ptr<A> > dq;
 
-// 	std::shared_ptr<A> a;
-// 	for (int i = 1; i < 10; i++) {
-// 		dq.push_back( std::shared_ptr<A>(new A(i)) );
-// 	}
+//	std::shared_ptr<A> a;
+//	for (int i = 1; i < 10; i++) {
+//		dq.push_back( std::shared_ptr<A>(new A(i)) );
+//	}
 
-// 	for (auto it = dq.begin(); it != dq.end() ; it++) {
-// 		if (it->get()) {
-// 			std::cout << it->get()->getI();
-// 		} else {
-// 			std::cout << "x";
-// 		}
-// 		std::cout << " ";
-// 	}
-// 	std::cout << std::endl;
+//	for (auto it = dq.begin(); it != dq.end() ; it++) {
+//		if (it->get()) {
+//			std::cout << it->get()->getI();
+//		} else {
+//			std::cout << "x";
+//		}
+//		std::cout << " ";
+//	}
+//	std::cout << std::endl;
 
-// 	A sItem(3);
-// 	std::cout << sItem.getI()
-// 		  << (find_in_deque(dq, sItem)? " found" : " failed") << std::endl;
+//	A sItem(3);
+//	std::cout << sItem.getI()
+//		  << (find_in_deque(dq, sItem)? " found" : " failed") << std::endl;
 
-// 	// if (it->get()) {
-// 	// 	std::cout << "next: " << (it->get())->getI() << std::endl;
-// 	// }
+//	// if (it->get()) {
+//	//	std::cout << "next: " << (it->get())->getI() << std::endl;
+//	// }
 
-// 	sItem = A(10);
-// 	std::cout << sItem.getI()
-// 		  << (find_in_deque(dq, sItem)? " found" : " failed") << std::endl;
+//	sItem = A(10);
+//	std::cout << sItem.getI()
+//		  << (find_in_deque(dq, sItem)? " found" : " failed") << std::endl;
 
-// 	sItem = A(9);
-// 	std::cout << sItem.getI()
-// 		  << (find_in_deque(dq, sItem)? " found" : " failed") << std::endl;
+//	sItem = A(9);
+//	std::cout << sItem.getI()
+//		  << (find_in_deque(dq, sItem)? " found" : " failed") << std::endl;
 // }
 
 void fast_deque()
@@ -150,11 +150,23 @@ void fast_deque()
 	std::cout << (dq.find(2) != dq.end()? "2 found" : "2 failed") << std::endl;
 }
 
+void test_deque_size()
+{
+	std::deque<int> dq(100);
+
+	std::cout << "\nsize:" << dq.size();
+	std::cout << "\nmax size:" << dq.max_size();
+}
+
 int main()
 {
 	// deqeue_withptr();
 	// deque_noptr();
-	fast_deque();
+	// fast_deque();
 
+	std::cout << sizeof(unsigned int);
+	test_deque_size();
+
+	std::cout << std::endl;
 	return 0;
 }
