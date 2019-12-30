@@ -36,8 +36,9 @@ public:
             }
         }
 
-        // d. For each source, add it to the sortedOrder and subtract one from all of its children's
-        // in-degrees if a child's in-degree becomes zero, add it to the sources queue
+        // d. For each source, add it to the sortedOrder and subtract one from all of its
+        // children's in-degrees if a child's in-degree becomes zero, add it to the
+        // sources queue
         while (!sources.empty()) {
             int vertex = sources.front();
             sources.pop();
