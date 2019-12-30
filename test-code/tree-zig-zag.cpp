@@ -108,6 +108,9 @@ int main()
         {
             work(stR, stL);
         }
+
+        // flip
+        lr = !lr;
     }
 
     return 0;
